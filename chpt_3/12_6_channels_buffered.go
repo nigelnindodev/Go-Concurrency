@@ -10,7 +10,7 @@ func main() {
 	var stdoutBuff bytes.Buffer
 	defer stdoutBuff.WriteTo(os.Stdout)
 
-	intStream := make(chan int, 4)
+	intStream := make(chan int, 4) // look at the result if channel is not buffered!
 	go func() {
 		defer close(intStream)
 		defer fmt.Fprintln(&stdoutBuff, "Producer Done.")

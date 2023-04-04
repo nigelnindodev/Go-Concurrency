@@ -21,4 +21,7 @@ func main() {
 	fmt.Println("Unblocking goroutines...")
 	close(begin)
 	wg.Wait()
+	/**
+	- Important to remember here that we are not actually reading i from the channel, but from the closure
+	*/
 }

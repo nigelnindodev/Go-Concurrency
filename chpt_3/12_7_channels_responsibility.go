@@ -9,7 +9,7 @@ func main() {
 	chanOwner := func() <-chan int {
 		resultStream := make(chan int, 5)
 		go func() {
-			defer close(resultStream) // owner is responsible for closing the channel
+			defer close(resultStream)
 			for i := 0; i <= 5; i++ {
 				resultStream <- i
 			}

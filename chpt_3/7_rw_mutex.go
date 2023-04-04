@@ -25,6 +25,9 @@ func main() {
 		defer l.Unlock()
 	}
 
+	/**
+	- Note mutex is passed to the producer and rwMute is passed to th observer
+	*/
 	test := func(count int, mutex, rwMutex sync.Locker) time.Duration {
 		var wg sync.WaitGroup
 		wg.Add(count + 1)
