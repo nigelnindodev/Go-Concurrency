@@ -20,6 +20,6 @@ func main() {
 
 	/**
 	- We leak here because we have passed in a nil channel, so no strings ever get written to the channel.
-	-Do work never exits, also the completed channel never closes.
+	- doWork never exits, also the completed channel never closes.
 	*/
 }

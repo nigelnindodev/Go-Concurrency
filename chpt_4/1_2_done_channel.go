@@ -35,6 +35,6 @@ func main() {
 		close(done) // send signal after on second of sleep
 	}()
 
-	<-terminated // block and wait for terminated channel inside doWork
+	<-terminated // block and wait for terminated channel created inside doWork function
 	fmt.Println("Done")
 }
