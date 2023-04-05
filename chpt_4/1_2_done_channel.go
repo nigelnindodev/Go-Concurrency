@@ -15,6 +15,10 @@ func main() {
 			defer fmt.Println("doWork exited")
 			defer close(terminated)
 			for {
+				/**
+				- The select helps read values from strings channel. But since it's nil, it shouldn't print anythin. However,
+				the done channel helps us close it. In this case, after one second and clean up resources.
+				*/
 				select {
 				case s := <-strings:
 					fmt.Println(s)
@@ -35,6 +39,7 @@ func main() {
 		close(done) // send signal after on second of sleep
 	}()
 
+	// line below unblocks after the channel being read from closes
 	<-terminated // block and wait for terminated channel created inside doWork function
 	fmt.Println("Done")
 }

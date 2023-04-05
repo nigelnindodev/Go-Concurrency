@@ -2,7 +2,19 @@ package main
 
 import "fmt"
 
+/*
+*
+  - We have an intStream <- chan int read channel in this example. A data pipeline input point (in this case (multiple, add))
+    should be able to define different types as well, and as long as the data output of a channel conforms to its input, we
+    can join them together.
+*/
 func main() {
+	/**
+	Think is a generator as the data initialization point to convert no channel data into channels os that it can be transformed.
+		- This could be:
+			- A database call
+			- API requests
+	*/
 	generator := func(done <-chan interface{}, integers ...int) <-chan int {
 		intStream := make(chan int)
 		go func() {

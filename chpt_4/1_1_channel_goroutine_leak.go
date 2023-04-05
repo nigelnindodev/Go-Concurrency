@@ -8,6 +8,7 @@ func main() {
 		go func() {
 			defer fmt.Println("doWork exited")
 			defer close(completed)
+			// This for range makes the defer statement to close the channel not run, because we have a nil channel!
 			for s := range strings {
 				fmt.Println(s)
 			}

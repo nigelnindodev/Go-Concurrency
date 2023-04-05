@@ -15,7 +15,10 @@ func main() {
 		}()
 		return stringStream
 	}
+
+	_ = toString // suppress not used warning [https://stackoverflow.com/a/21744129]
 	/**
-	- Will not compile since not completed, this is justa trivial example of how this could potentially work
+	- Will not compile since not completed, this is justa trivial example of how this could potentially work. See if you
+		can complete it if you have been following.
 	*/
 }
