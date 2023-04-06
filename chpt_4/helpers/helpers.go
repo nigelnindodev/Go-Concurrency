@@ -97,6 +97,7 @@ func isPrime(n int) bool {
 	return true
 }
 
+// FanIn takes in multiple channels and returns one channel, combining the results of the provided channels/**
 func FanIn(
 	done <-chan interface{},
 	channels ...<-chan interface{},
@@ -132,4 +133,27 @@ func FanIn(
 	}()
 
 	return multiplexedStream
+}
+
+// OrDone adds for check for when a channel we are reading from is not done yet, but the goroutine reading from the channel is cancelled (for any reason)/**
+func OrDone(done, c <-chan interface{}) <-chan interface{} {
+	valStream := make(chan interface{})
+	go func() {
+		defer close(valStream)
+		for {
+			select {
+			case <-done:
+				return
+			case v, ok := <-c:
+				if ok == false {
+					return
+				}
+				select {
+				case valStream <- v:
+				case <-done:
+				}
+			}
+		}
+	}()
+	return valStream
 }
