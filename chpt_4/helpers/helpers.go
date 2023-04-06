@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"math"
+	"sync"
 )
 
 // Take returns a new channel taking n items from the provided valueStream, then closes./**
@@ -94,4 +95,41 @@ func isPrime(n int) bool {
 		}
 	}
 	return true
+}
+
+func FanIn(
+	done <-chan interface{},
+	channels ...<-chan interface{},
+) <-chan interface{} {
+	var wg sync.WaitGroup
+	multiplexedStream := make(chan interface{})
+
+	/**
+	Fan in messages into the multiplexed stream from a single stream
+	*/
+	multiplex := func(c <-chan interface{}) {
+		defer wg.Done()
+		for i := range c {
+			select {
+			case <-done:
+				return
+			case multiplexedStream <- i:
+			}
+		}
+	}
+
+	wg.Add(len(channels))
+	for _, c := range channels {
+		go multiplex(c)
+	}
+
+	/**
+	- Wait for all the channels to finish sending messages before closing the multiplexed channel
+	*/
+	go func() {
+		wg.Wait()
+		close(multiplexedStream)
+	}()
+
+	return multiplexedStream
 }
