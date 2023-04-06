@@ -31,9 +31,8 @@ func main() {
 		defer close(done)
 	}()
 
-	// Noted that variable name collides with rand package
-	rand := func() interface{} { return rand.Int() }
-	randomNums := repeatFn(done, rand)
+	randGen := func() interface{} { return rand.Int() }
+	randomNums := repeatFn(done, randGen)
 
 	for v := range randomNums {
 		fmt.Println(v)
