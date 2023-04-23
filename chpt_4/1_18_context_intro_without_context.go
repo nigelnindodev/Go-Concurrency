@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+/*
+*
+- Fine for this example, but note that we are ignoring a race condition here, farewell could be printed before greeting.
+*/
 func main() {
 	var wg sync.WaitGroup
 	done := make(chan interface{})
@@ -74,7 +78,7 @@ func locale(done <-chan interface{}) (string, error) {
 	select {
 	case <-done:
 		return "", fmt.Errorf("cancelled")
-	case <-time.After(3 * time.Second):
+	case <-time.After(10 * time.Second):
 	}
 	return "EN/US", nil
 }
