@@ -10,6 +10,10 @@ func main() {
 	newRandStream := func(done <-chan interface{}) <-chan int {
 		randStream := make(chan int)
 		go func() {
+			/**
+			Wouldn't it be better to add the <- done select code block? That was we don't have to add a time.Sleep at
+			the end of the code
+			*/
 			defer fmt.Println("newRandStream closure exited")
 			defer close(randStream)
 			for {
