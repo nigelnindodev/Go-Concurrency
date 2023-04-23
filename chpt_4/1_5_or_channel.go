@@ -17,8 +17,7 @@ import (
 func main() {
 	var or func(channels ...<-chan interface{}) <-chan interface{}
 	or = func(channels ...<-chan interface{}) <-chan interface{} {
-		fmt.Println("Running or function")
-		fmt.Println(channels)
+		fmt.Printf("Running or function for %v channel(s)\n", len(channels))
 		switch len(channels) {
 		case 0:
 			/**
@@ -62,9 +61,11 @@ func main() {
 				case <-channels[1]:
 				case <-channels[2]:
 				/**
-				- Also pass in the or channel as well as part of the select so that when goroutines up the tree finish
-					up (in this case the ones associated with channels[0..2]), it will also exist the goroutines down the
-					tree (the ones added in channels[3:1])
+				- Also pass in the orDone channel during the recursive call so that when goroutines up the tree (recursive call stack) finish
+					up (in this case the ones associated with channels[0..2]), it will also exit the goroutines down the
+					tree (the ones added in channels[3:])
+				- This will in essence lead to a creation of a new orDone channel for every iteration of the or function
+					to handle closing of channels within a specific recursive step/stack
 				*/
 				case <-or(append(channels[3:], orDone)...):
 				}
@@ -75,6 +76,7 @@ func main() {
 		Don't forget about this single but important line!
 			- This is what closes the or function returns, And is tied to the `defer close (orDone)`. In the main goroutine,
 				once the close(orDone) is called, that's what will cause the termination of the main goroutine in this example.
+			- The termination is caused by blocking the main goroutine by waiting for a read on the channel the or function returns until we have a result
 		*/
 		return orDone
 	}
@@ -96,7 +98,7 @@ func main() {
 		sig(1*time.Hour),
 		sig(1*time.Minute),
 	)
-	fmt.Printf("done after %v", time.Since(start))
+	fmt.Printf("done after %v\n", time.Since(start))
 
 	/**
 	- This reminds me of some patterns in Scala (Akka), although much simpler to write really. An example:
